@@ -30,16 +30,13 @@ const User = sequelize.define(
             }
         },
         country:{
-            type:Sequelize.STRING,
-            allowNull:false
+            type:Sequelize.STRING
         },
         ipAddress:{
           type:Sequelize.STRING,
-          allowNull:false
         },
         address:{
         type:Sequelize.STRING,
-        allowNull:false
         },
         role:{
             type:Sequelize.ENUM(['user','subadmin','admin']),

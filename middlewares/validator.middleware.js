@@ -1,11 +1,11 @@
-const {check,body} = require('express-validator')
+const {check,body,validationResult} = require('express-validator')
 const User = require('../models/user.model')
 
 exports.user = check('email')
 .notEmpty().withMessage("Email field is required")
 .isEmail().withMessage("Kindly provide a valid email")
 .custom((value,{req})=>{
-    return User.findOne({where:{email:email}})
+    return User.findOne({where:{email:value}})
     .then(user=>{
         if(user){
           return  Promise.reject("User already exists with this email address")
@@ -41,3 +41,10 @@ exports.confirm_password = body('confirmPassword')
         return !0
     }
 })
+exports.results = (req,res,next)=>{
+  const errors = validationResult(req)
+  if(!errors.isEmpty()){
+    return res.status(422).json({success:false,body:{code:422,status:'Validation Error',data:[...errors.array()]}})
+  }
+  next()
+}
