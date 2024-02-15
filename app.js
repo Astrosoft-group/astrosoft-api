@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const rootRoutes = require('./routes/index');
-const authRoutes = require('./routes/auth')
+const rootRoutes = require('./routes/index.route');
+const authRoutes = require('./routes/auth.route')
 
 app.use(express.static('public'))
 app.use(express.json())

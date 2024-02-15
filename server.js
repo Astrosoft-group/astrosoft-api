@@ -1,6 +1,7 @@
 const Server = require('http').createServer(require('./app'))
 const {port} = require('./config')
 const {sequelize,connectToDB} = require('./utilities/database')
+const User = require('./models/user.model')
 
 connectToDB()
 .then(connected=>{
