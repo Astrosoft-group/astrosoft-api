@@ -23,6 +23,22 @@ module.exports = class Query{
             handlers.next(error)
           }
        }
+       static async findOne (model,condition,handlers){
+        try {      
+          const data = await model.findOne({where:condition})
+          return data
+        } catch (error) {  
+          handlers.next(error)        
+        }
+       }
+       static async findById (model,id,handlers,){
+        try {      
+          const data = await model.findByPk(id)
+          return data
+        } catch (error) {  
+          handlers.next(error)        
+        }
+       }
 
      
 }

@@ -11,5 +11,6 @@ module.exports ={
     db_pass:process.env.NODE_ENV === 'development'?
     process.env.LOCAL_DB_PASS:
     process.env.REMOTE_DB_PASS,
-    db_host:process.env.DB_HOST
+    db_host:process.env.DB_HOST,
+    jwt_secret:process.env.JWT_SECRET
 }

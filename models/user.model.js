@@ -38,6 +38,8 @@ const User = sequelize.define(
         address:{
         type:Sequelize.STRING,
         },
+        resetToken:Sequelize.STRING,
+        resetTokenExpires:Sequelize.DATE,
         role:{
             type:Sequelize.ENUM(['user','subadmin','admin']),
             allowNull:false
