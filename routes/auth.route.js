@@ -8,5 +8,11 @@ router
 
 router
 .route('/signin')
-.post([_.email,_.password],controller.signinUser)
+.post([_.email,_.password,_.results],controller.signinUser)
+
+router
+.route('/forgot_password')
+.post([_.email,_.results],controller.forgotPassword)
+
+router
 module.exports = router
