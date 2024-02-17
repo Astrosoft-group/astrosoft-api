@@ -15,4 +15,9 @@ router
 .post([_.email,_.results],controller.forgotPassword)
 
 router
+.route(['/reset_password/:token'])
+.get([_.reset_token,_.results],controller.resetPassword)
+.patch([_.reset_token,_.password,_.results],controller.setNewPassword)
+
+router
 module.exports = router

@@ -1,4 +1,4 @@
-const {check,body,validationResult} = require('express-validator')
+const {check,body,param,validationResult} = require('express-validator')
 const User = require('../models/user.model')
 
 exports.user = check('email')
@@ -41,6 +41,10 @@ exports.confirm_password = body('confirmPassword')
         return !0
     }
 })
+exports.reset_token = param('token')
+.notEmpty().withMessage('Invalid token provided')
+.isLength({min:64}).withMessage("Kindly provide a valid reset token.")
+.isAlphanumeric().withMessage("Invalid reset token provided");
 exports.results = (req,res,next)=>{
   const errors = validationResult(req)
   if(!errors.isEmpty()){

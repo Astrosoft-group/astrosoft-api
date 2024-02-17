@@ -6,15 +6,8 @@ module.exports = (user)=>{
             const hashedPassword = await bcrypt.hash(user.password,12)
             user.password = hashedPassword
          } catch (error) {
-            Promise.reject(error)
+            throw error
          }
     });
-    user.addHook('beforeUpdate',async function(user,options){
-        try {
-            const hashedPassword = await bcrypt.hash(user.password,12)
-            user.password = hashedPassword
-        } catch (error) {
-            Promise.reject(error)
-        }
-    })
+
 }

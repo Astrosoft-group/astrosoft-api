@@ -7,15 +7,15 @@ module.exports = class Query{
             handlers.next(error)
           }
        }
-       static async update (model,options,handlers,id){
+       static async update (model,options,handlers,condition){
         try {
-            const data = await model.update(options,{where:{id}})
+            const data = await model.update(options,{where:condition})
            return handlers.res.status(200).json({success:!0,body:{code:200,status:'Success',data}})
           } catch (error) {
             handlers.next(error)
           }
        }
-       static async delete (model,options,handlers,id){
+       static async delete (model,options,handlers,condition){
         try {
             const data = await model.destroy(options,{where:{id}})
            return handlers.res.status(201).json({success:!0,body:{code:200,status:'Success',data}})

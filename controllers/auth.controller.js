@@ -5,6 +5,7 @@ const {jwt_secret} = require('../config')
 const bcrypt = require('bcryptjs')
 const {promisify} = require('util')
 const crypto = require('crypto')
+const {Op} = require('sequelize')
 
 exports.signupUser = (req,res,next)=>{
     const {fullname,email,password} = req.body
@@ -42,7 +43,7 @@ exports.forgotPassword = (req,res,next)=>{
         if(!user){
             return res.status(401).json({success:false,body:{code:401,status:'Authentication Error',data:[{msg:'No user found!',path:'email',location:'body',value:email}]}})
         } 
-        promisify(crypto.randomBytes)(32)
+       return promisify(crypto.randomBytes)(32)
         .then(randomBytes=>{
             const resetToken = randomBytes.toString('hex')
          user.resetToken = resetToken
@@ -51,6 +52,42 @@ exports.forgotPassword = (req,res,next)=>{
         })
         .then(savedUser=>{
             return res.status(200).json({success:true,body:{code:200,status:'Success',data:{user:savedUser}}})    
+        })
+    })
+    .catch(error=>{
+        console.log(error)
+    })
+}
+
+exports.resetPassword = (req,res,next)=>{
+    const {token} = req.params
+    Query.findOne(User,{resetToken:token},{next})
+    .then(user=>{
+        if(!user){
+            return res.status(401).json({success:false,body:{code:401,status:'Authentication Error',data:[{msg:'Invalid reset token!',path:'token',location:'params',value:token}]}})
+        }else if(new Date(Date.now())>user.resetTokenExpires){
+            return res.status(401).json({success:false,body:{code:401,status:'Authentication Error',data:[{msg:'reset token has expired',path:'token',location:'params',value:token}]}})
+        }
+        return res.status(200).json({success:true,body:{code:200,status:'Success',data:user}})
+    }) 
+    .catch(error=>{
+        console.log(error)
+    })
+}
+
+exports.setNewPassword = (req,res,next)=>{
+    const {token} = req.params
+    const {password} = req.body
+    Query.findOne(User,{resetToken:token,resetTokenExpires:{
+        [Op.gt]:new Date(Date.now())
+    }},{next})
+    .then(user=>{
+        if(!user){
+            return res.status(401).json({success:false,body:{code:401,status:'Authentication Error',data:[{msg:'Invalid reset token!',path:'token',location:'params',value:token}]}})
+        }
+        bcrypt.hash(password,12)
+        .then(hashedPassword=>{
+            return Query.update(User,{password:hashedPassword},{res,next},{resetToken:token})
         })
     })
     .catch(error=>{
