@@ -5,12 +5,14 @@ const User = require('./models/user.model')
 
 connectToDB()
 .then(connected=>{
-    console.log('connected to db')
     return sequelize.sync()
 })
 .then(synced=>{
     Server.listen(port,()=>{
         console.log("Listening on port "+port)
     })
+})
+.catch(error=>{
+    console.log(error)
 })
 

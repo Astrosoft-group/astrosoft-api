@@ -6,35 +6,34 @@ const bcrypt = require('bcryptjs')
 const {promisify} = require('util')
 const crypto = require('crypto')
 const {Op} = require('sequelize')
+const UserService = require('../services/user.services')
+const tryCatch = require('../utilities/trycatch')
 
-exports.signupUser = (req,res,next)=>{
-    const {fullname,email,password} = req.body
-    Query.insert(User,{
-        fullname,email,password,role:'user'
-    },{
-        res,next
+exports.signupUser = tryCatch(async(req,res,next)=>{
+    const user = await UserService.createUser(req.body)
+    res.status(200).json({
+        success:true,
+        body:{
+            code:200,
+            status:'success',
+            msg:'User has been created',
+            data:user
+        }
     })
-}
-exports.signinUser = (req,res,next)=>{
-    const {email,password} = req.body
-    Query.findOne(User,{email},{next})
-    .then(user=>{
-        if(!user){
-        return res.status(401).json({success:false,body:{code:401,status:'Authentication Error',data:[{msg:'Incorrect email or password',path:'email',location:'body',value:email}]}})
-        }
-      bcrypt.compare(password,user.password)
-      .then(doMatch=>{
-        if(!doMatch){
-            return res.status(401).json({success:false,body:{code:401,status:'Authentication Error',data:[{msg:'Incorrect email or password',path:'password',location:'body',value:password}]}})
-        }
+})
+exports.signinUser = tryCatch(async(req,res,next)=>{
+      const user = await UserService.authenticateUser(req.body)
       const token = jwt.sign({id:user.id},jwt_secret)
-      return res.status(200).json({success:true,body:{code:200,status:'Success',data:{user,accessToken:token}}})
-      })
+      return res.status(200).json({
+        success:true,
+        body:{
+            code:200,
+            status:'success',
+            data:{...user,accessToken:token}
+        }
     })
-    .catch(error=>{
-        console.log(error)
-    })
-}
+
+})
 
 exports.forgotPassword = (req,res,next)=>{
     const {email} = req.body
