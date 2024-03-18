@@ -42,7 +42,8 @@ const User = sequelize.define(
         resetTokenExpires:Sequelize.DATE,
         role:{
             type:Sequelize.ENUM(['user','subadmin','admin']),
-            allowNull:false
+            allowNull:false,
+            defaultValue:'user'
         },
     }
 );

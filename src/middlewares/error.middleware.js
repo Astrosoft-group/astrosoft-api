@@ -4,7 +4,7 @@ module.exports = (err,req,res,next)=>{
     res.status(statusCode).json({
         success:false,
         body:{
-            status:'Something went wrong',
+            status:'error',
             code:statusCode,
             data:{
                 msg:err.message,

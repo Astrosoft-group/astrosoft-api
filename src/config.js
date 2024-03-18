@@ -12,5 +12,13 @@ module.exports ={
     process.env.LOCAL_DB_PASS:
     process.env.REMOTE_DB_PASS,
     db_host:process.env.DB_HOST,
-    jwt_secret:process.env.JWT_SECRET
+    jwt_secret:process.env.JWT_SECRET,
+    server:process.env.NODE_ENV === 'development'?
+    process.env.LOCAL_SERVER:
+    process.env.REMOTE_SERVER,
+    jwt_issuer:process.env.NODE_ENV === 'development'?
+    null:process.env.REMOTE_SERVER,
+    client:process.env.NODE_ENV === 'development'?
+    process.env.LOCAL_CLIENT:
+    process.env.REMOTE_CLIENT,
 }
