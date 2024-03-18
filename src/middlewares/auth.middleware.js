@@ -1,4 +1,4 @@
-const passport = require('../config/passport')
+const passport = require('../config/passport.config')
 const {AuthenticationError} = require('../helpers/exceptions/error.helper')
 
 exports.auth = (req,res,next)=>{
