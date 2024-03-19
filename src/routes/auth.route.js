@@ -24,7 +24,7 @@ router
 
 router
   .route("/waitlist")
-  .post([_.user, _.fullname, _.email, _.results], controller.createWaitlist)
+  .post([_.waitlist_user, _.fullname, _.email, _.results], controller.createWaitlist)
 
 router;
 module.exports = router;
