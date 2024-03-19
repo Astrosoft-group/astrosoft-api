@@ -1,9 +1,8 @@
-
-class CustomError extends Error{
-    constructor(message,details){
-        super(message)
-        this.details = details
-    }
+class CustomError extends Error {
+  constructor(message, details) {
+    super(message);
+    this.details = details;
+  }
 }
 
 exports.AuthenticationError = class AuthenticationError extends CustomError{
