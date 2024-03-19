@@ -30,6 +30,11 @@ exports.setNewPassword = tryCatch(async (req, res, next) => {
 });
 
 exports.createWaitlist = tryCatch(async (req, res, next) => {
-  const user = AuthService.createWaitlist(req.body);
+  const user = await AuthService.createWaitlist(req.body);
   successHandler(user, "user successfully added to waitlist")(res);
+});
+
+exports.getAllWaitlistUsers = tryCatch(async (req, res, next) => {
+  const user = await AuthService.getAllWaitlistUsers();
+  successHandler(user, "Successfully fetched all registered waitlist")(res);
 });

@@ -9,6 +9,7 @@ const errorHandler = require("../../helpers/handlers/error");
 const { promisify } = require("util");
 const crypto = require("crypto");
 const { Op } = require("sequelize");
+const WaitList = require("../../models/waitlist.model");
 
 module.exports = class AuthService {
   static createUser(data) {
@@ -121,6 +122,12 @@ module.exports = class AuthService {
     ]);
     return WaitList.create({ ...user })
       .then((user) => user)
+      .catch((error) => errorHandler(error));
+  }
+
+  static getAllWaitlistUsers() {
+    return WaitList.findAll()
+      .then()
       .catch((error) => errorHandler(error));
   }
 };
