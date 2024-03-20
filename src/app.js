@@ -12,11 +12,11 @@ app.use(express.static('public'))
 app.use(express.json())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json())
+app.use(cors({optionsSuccessStatus:200,origin:_.client}))
+app.use(compression())
 
 app.use('/api/v1',rootRoutes)
 app.use('/api/v1/auth',authRoutes)
 app.use(errHandler)
-app.use(cors({optionsSuccessStatus:200,origin:_.client}))
-app.use(compression())
 
 module.exports = app
