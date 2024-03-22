@@ -22,10 +22,5 @@ router
   .get([_.reset_token, _.results], controller.resetPassword)
   .patch([_.reset_token, _.password, _.results], controller.setNewPassword);
 
-router
-  .route("/waitlist")
-  .post([_.user, _.fullname, _.email, _.results], controller.createWaitlist)
-  .get(controller.getAllWaitlistUsers);
-
 router;
 module.exports = router;

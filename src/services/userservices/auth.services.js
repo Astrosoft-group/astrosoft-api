@@ -1,15 +1,17 @@
 const User = require("../../models/user.model");
 const _ = require("lodash");
+const jwt = require("jsonwebtoken");
+const { jwt_secret } = require("../../config");
 const bcrypt = require("bcryptjs");
 const {
   AuthenticationError,
   ServerError,
+  AuthorizationError,
 } = require("../../helpers/exceptions/error.helper");
 const errorHandler = require("../../helpers/handlers/error");
 const { promisify } = require("util");
 const crypto = require("crypto");
 const { Op } = require("sequelize");
-const WaitList = require("../../models/waitlist.model");
 
 module.exports = class AuthService {
   static createUser(data) {
@@ -112,22 +114,57 @@ module.exports = class AuthService {
       .catch((error) => errorHandler(error));
   }
 
-  static createWaitlist(data) {
-    const user = _.pick(data, [
-      "fullname",
-      "email",
-      "userCategory",
-      "state",
-      "city",
-    ]);
-    return WaitList.create({ ...user })
-      .then((user) => user)
-      .catch((error) => errorHandler(error));
-  }
+  static protect = () => {
+    return (req, res, next) => {
+      let token;
 
-  static getAllWaitlistUsers() {
-    return WaitList.findAll()
-      .then()
-      .catch((error) => errorHandler(error));
-  }
+      if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith("Bearer")
+      ) {
+        token = req.headers.authorization.split(" ")[1];
+      }
+
+      if (!token) {
+        return next(
+          new AuthorizationError(
+            "You are not authorized. Please login to gain access",
+            { path: "token", value: token, field: "authorization" }
+          )
+        );
+      }
+
+      promisify(jwt.verify)(token, jwt_secret)
+        .then((decoded) => {
+          const id = decoded.id;
+          return User.findOne({ where: { id: id } });
+        })
+        .then((currentUser) => {
+          if (!currentUser) {
+            throw new AuthorizationError(
+              "The user with this token no longer exist"
+            );
+          }
+          req.user = currentUser;
+          next();
+        })
+        .catch((error) => {
+          next(error);
+        });
+    };
+  };
+
+  static restrictTo = (...roles) => {
+    return (req, res, next) => {
+      if (!roles.includes(req.user.role)) {
+        return next(
+          new AuthorizationError(
+            "You do not have permission to perform this action",
+            {}
+          )
+        );
+      }
+      next();
+    };
+  };
 };
