@@ -23,10 +23,3 @@ exports.ServerError = class ServerError extends CustomError {
     this.code = 500;
   }
 };
-
-exports.NotFound = class NotFound extends CustomError {
-  constructor(message, details) {
-    super(message, details);
-    this.code = 404;
-  }
-};
