@@ -1,9 +1,9 @@
 
-module.exports = (data,msg)=>(res)=>{
-    res.status(200).json({
+module.exports = (data,code,msg)=>(res)=>{
+    res.status(code).json({
         success:true,
         body:{
-            code:200,
+            code,
             status:'success',
             msg:msg,
             data
